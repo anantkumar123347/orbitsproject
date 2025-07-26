@@ -90,9 +90,7 @@ void showAddDeviceDialog(BuildContext context) {
                 return;
               }
 
-              final url = Uri.parse(
-                "https://mitzvah-software-for-smart-air-curtain.onrender.com/add-data",
-              );
+              final url = Uri.parse("http://13.203.214.225:3000/add-data");
 
               final body = {
                 "macAddress": mac,

@@ -46,9 +46,7 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
 
   Future<void> fetchDeviceData() async {
     setState(() => isLoading = true);
-    final url = Uri.parse(
-      'https://mitzvah-software-for-smart-air-curtain.onrender.com/find',
-    );
+    final url = Uri.parse('http://13.203.214.225:3000/find');
 
     try {
       final response = await http.post(
@@ -90,16 +88,32 @@ class _DeviceDetailPageState extends State<DeviceDetailPage> {
     final currentStatus = deviceData!['Status'];
     final newStatus = currentStatus == 1 ? 0 : 1;
 
-    final url = Uri.parse(
-      'https://mitzvah-software-for-smart-air-curtain.onrender.com/change',
-    );
+    final urlChange = Uri.parse('http://13.203.214.225:3000/change');
+    final urlRelayChange = Uri.parse('http://13.203.214.225:3000/relayChange');
+    final body = jsonEncode({'st': newStatus, 'id': widget.deviceId});
 
     try {
+      // First call the /change API
       final response = await http.post(
-        url,
+        urlChange,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'st': newStatus, 'id': widget.deviceId}),
+        body: body,
       );
+
+      // Then call the /relayChange API (fire-and-forget, but log errors)
+      http
+          .post(
+            urlRelayChange,
+            headers: {'Content-Type': 'application/json'},
+            body: body,
+          )
+          .catchError((e, stackTrace) async {
+            await ErrorLogger.logError(
+              'DeviceDetailPage -> relayChange',
+              e.toString(),
+              stackTrace.toString(),
+            );
+          });
 
       if (response.statusCode == 200 && response.body == 'Done') {
         await fetchDeviceData(); // Refresh data after status change

@@ -38,7 +38,7 @@ void showRemoveClientDialog(BuildContext context) {
                   }
 
                   final url = Uri.parse(
-                    "https://mitzvah-software-for-smart-air-curtain.onrender.com/delete-client",
+                    "http://13.203.214.225:3000/delete-client",
                   );
 
                   try {

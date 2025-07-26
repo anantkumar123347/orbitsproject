@@ -159,9 +159,7 @@ void showAddUserDialog(BuildContext context) {
 
                   try {
                     final response = await http.post(
-                      Uri.parse(
-                        "https://mitzvah-software-for-smart-air-curtain.onrender.com/add2",
-                      ),
+                      Uri.parse("http://13.203.214.225:3000/add2"),
                       headers: {"Content-Type": "application/json"},
                       body: jsonEncode(body),
                     );

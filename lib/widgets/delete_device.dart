@@ -37,7 +37,7 @@ void showDeleteDeviceDialog(BuildContext context) {
                     }
 
                     final url = Uri.parse(
-                      "https://mitzvah-software-for-smart-air-curtain.onrender.com/delete-device",
+                      "http://13.203.214.225:3000/delete-device",
                     );
 
                     try {

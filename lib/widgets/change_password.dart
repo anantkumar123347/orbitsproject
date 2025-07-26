@@ -70,9 +70,7 @@ void showChangePasswordDialog(BuildContext context) {
 
               try {
                 final response = await http.post(
-                  Uri.parse(
-                    'https://mitzvah-software-for-smart-air-curtain.onrender.com/change-password',
-                  ),
+                  Uri.parse('http://13.203.214.225:3000/change-password'),
                   headers: {"Content-Type": "application/json"},
                   body: jsonEncode({
                     "username": username,

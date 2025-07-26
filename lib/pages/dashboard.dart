@@ -45,7 +45,7 @@ class _DashboardPageState extends State<DashboardPage> {
     setState(() => isLoading = true);
 
     try {
-      final getNameUrl = Uri.parse('https://mitzvah-software-for-smart-air-curtain.onrender.com/get-name');
+      final getNameUrl = Uri.parse('http://13.203.214.225:3000/get-name');
       final getNameResponse = await http.post(
         getNameUrl,
         body: jsonEncode({"username": username, "password": password}),
@@ -70,7 +70,7 @@ class _DashboardPageState extends State<DashboardPage> {
           requestBody["cs"] = getNameData["name"] ?? "";
         }
 
-        final deviceUrl = Uri.parse('https://mitzvah-software-for-smart-air-curtain.onrender.com/device-select');
+        final deviceUrl = Uri.parse('http://13.203.214.225:3000/device-select');
         final deviceResponse = await http.post(
           deviceUrl,
           body: jsonEncode(requestBody),
@@ -80,21 +80,22 @@ class _DashboardPageState extends State<DashboardPage> {
         if (deviceResponse.statusCode == 200) {
           final List<dynamic> deviceList = jsonDecode(deviceResponse.body);
 
-          final List<Map<String, dynamic>> mappedDevices = deviceList.map((device) {
-            return {
-              "name": device["device-name"],
-              "id": device["uniqueId"],
-              "client": device["name"],
-              "district": device["district"],
-              "city": device["city"],
-              "location": device["location"],
-              "status": device["status"],
-              "emergency": device["emergency"],
-              "sector": device["sector"],
-              "state": device["state"],
-              "pincode": device["pincode"],
-            };
-          }).toList();
+          final List<Map<String, dynamic>> mappedDevices =
+              deviceList.map((device) {
+                return {
+                  "name": device["device-name"],
+                  "id": device["uniqueId"],
+                  "client": device["name"],
+                  "district": device["district"],
+                  "city": device["city"],
+                  "location": device["location"],
+                  "status": device["status"],
+                  "emergency": device["emergency"],
+                  "sector": device["sector"],
+                  "state": device["state"],
+                  "pincode": device["pincode"],
+                };
+              }).toList();
 
           setState(() {
             allDevices = mappedDevices;
@@ -108,10 +109,15 @@ class _DashboardPageState extends State<DashboardPage> {
         throw Exception("Initial authentication failed");
       }
     } catch (e, stack) {
-      await ErrorLogger.logError("DashboardPage _fetchDevices Error: $e", stack.toString());
+      await ErrorLogger.logError(
+        "DashboardPage _fetchDevices Error: $e",
+        stack.toString(),
+      );
       setState(() => isLoading = false);
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
       }
     }
   }
@@ -128,17 +134,18 @@ class _DashboardPageState extends State<DashboardPage> {
     String? pincode,
   }) {
     setState(() {
-      filteredDevices = allDevices.where((device) {
-        return (deviceName == null || device["name"] == deviceName) &&
-               (deviceId == null || device["id"] == deviceId) &&
-               (client == null || device["client"] == client) &&
-               (district == null || device["district"] == district) &&
-               (city == null || device["city"] == city) &&
-               (location == null || device["location"] == location) &&
-               (sector == null || device["sector"] == sector) &&
-               (state == null || device["state"] == state) &&
-               (pincode == null || device["pincode"] == pincode);
-      }).toList();
+      filteredDevices =
+          allDevices.where((device) {
+            return (deviceName == null || device["name"] == deviceName) &&
+                (deviceId == null || device["id"] == deviceId) &&
+                (client == null || device["client"] == client) &&
+                (district == null || device["district"] == district) &&
+                (city == null || device["city"] == city) &&
+                (location == null || device["location"] == location) &&
+                (sector == null || device["sector"] == sector) &&
+                (state == null || device["state"] == state) &&
+                (pincode == null || device["pincode"] == pincode);
+          }).toList();
     });
   }
 
@@ -163,15 +170,61 @@ class _DashboardPageState extends State<DashboardPage> {
               content: SingleChildScrollView(
                 child: Column(
                   children: [
-                    _buildDropdown("Device Name", selectedDeviceName, allDevices.map((d) => d["name"].toString()).toSet(), (value) => setDialogState(() => selectedDeviceName = value)),
-                    _buildDropdown("Device ID", selectedDeviceId, allDevices.map((d) => d["id"].toString()).toSet(), (value) => setDialogState(() => selectedDeviceId = value)),
-                    _buildDropdown("Client", selectedClient, allDevices.map((d) => d["client"].toString()).toSet(), (value) => setDialogState(() => selectedClient = value)),
-                    _buildDropdown("District", selectedDistrict, allDevices.map((d) => d["district"].toString()).toSet(), (value) => setDialogState(() => selectedDistrict = value)),
-                    _buildDropdown("City", selectedCity, allDevices.map((d) => d["city"].toString()).toSet(), (value) => setDialogState(() => selectedCity = value)),
-                    _buildDropdown("Location", selectedLocation, allDevices.map((d) => d["location"].toString()).toSet(), (value) => setDialogState(() => selectedLocation = value)),
-                    _buildDropdown("Sector", selectedSector, allDevices.map((d) => d["sector"].toString()).toSet(), (value) => setDialogState(() => selectedSector = value)),
-                    _buildDropdown("State", selectedState, allDevices.map((d) => d["state"].toString()).toSet(), (value) => setDialogState(() => selectedState = value)),
-                    _buildDropdown("Pincode", selectedPincode, allDevices.map((d) => d["pincode"].toString()).toSet(), (value) => setDialogState(() => selectedPincode = value)),
+                    _buildDropdown(
+                      "Device Name",
+                      selectedDeviceName,
+                      allDevices.map((d) => d["name"].toString()).toSet(),
+                      (value) =>
+                          setDialogState(() => selectedDeviceName = value),
+                    ),
+                    _buildDropdown(
+                      "Device ID",
+                      selectedDeviceId,
+                      allDevices.map((d) => d["id"].toString()).toSet(),
+                      (value) => setDialogState(() => selectedDeviceId = value),
+                    ),
+                    _buildDropdown(
+                      "Client",
+                      selectedClient,
+                      allDevices.map((d) => d["client"].toString()).toSet(),
+                      (value) => setDialogState(() => selectedClient = value),
+                    ),
+                    _buildDropdown(
+                      "District",
+                      selectedDistrict,
+                      allDevices.map((d) => d["district"].toString()).toSet(),
+                      (value) => setDialogState(() => selectedDistrict = value),
+                    ),
+                    _buildDropdown(
+                      "City",
+                      selectedCity,
+                      allDevices.map((d) => d["city"].toString()).toSet(),
+                      (value) => setDialogState(() => selectedCity = value),
+                    ),
+                    _buildDropdown(
+                      "Location",
+                      selectedLocation,
+                      allDevices.map((d) => d["location"].toString()).toSet(),
+                      (value) => setDialogState(() => selectedLocation = value),
+                    ),
+                    _buildDropdown(
+                      "Sector",
+                      selectedSector,
+                      allDevices.map((d) => d["sector"].toString()).toSet(),
+                      (value) => setDialogState(() => selectedSector = value),
+                    ),
+                    _buildDropdown(
+                      "State",
+                      selectedState,
+                      allDevices.map((d) => d["state"].toString()).toSet(),
+                      (value) => setDialogState(() => selectedState = value),
+                    ),
+                    _buildDropdown(
+                      "Pincode",
+                      selectedPincode,
+                      allDevices.map((d) => d["pincode"].toString()).toSet(),
+                      (value) => setDialogState(() => selectedPincode = value),
+                    ),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
@@ -200,13 +253,24 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildDropdown(String label, String? value, Set<String> options, void Function(String?) onChanged) {
+  Widget _buildDropdown(
+    String label,
+    String? value,
+    Set<String> options,
+    void Function(String?) onChanged,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: DropdownButtonFormField<String>(
         decoration: InputDecoration(labelText: label),
         value: value,
-        items: options.map((option) => DropdownMenuItem(value: option, child: Text(option))).toList(),
+        items:
+            options
+                .map(
+                  (option) =>
+                      DropdownMenuItem(value: option, child: Text(option)),
+                )
+                .toList(),
         onChanged: onChanged,
       ),
     );
@@ -230,19 +294,20 @@ class _DashboardPageState extends State<DashboardPage> {
       drawer: AppDrawer(username: username, userRole: userRole),
       body: Padding(
         padding: const EdgeInsets.all(10),
-        child: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _buildHeader(),
-                    const SizedBox(height: 10),
-                    _buildDeviceSummary(),
-                    const SizedBox(height: 10),
-                    _buildDeviceGrid(context),
-                  ],
+        child:
+            isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildHeader(),
+                      const SizedBox(height: 10),
+                      _buildDeviceSummary(),
+                      const SizedBox(height: 10),
+                      _buildDeviceGrid(context),
+                    ],
+                  ),
                 ),
-              ),
       ),
     );
   }
@@ -252,7 +317,10 @@ class _DashboardPageState extends State<DashboardPage> {
       children: [
         const Text("Dashboard", style: TextStyle(fontSize: 24)),
         const Spacer(),
-        IconButton(icon: const Icon(Icons.refresh, color: Colors.green), onPressed: _fetchDevices),
+        IconButton(
+          icon: const Icon(Icons.refresh, color: Colors.green),
+          onPressed: _fetchDevices,
+        ),
         _buildFilterButton(),
       ],
     );
@@ -265,14 +333,20 @@ class _DashboardPageState extends State<DashboardPage> {
         onTap: _showFilterDialog,
         borderRadius: BorderRadius.circular(8.0),
         child: Ink(
-          decoration: BoxDecoration(color: Colors.green, borderRadius: BorderRadius.circular(8.0)),
+          decoration: BoxDecoration(
+            color: Colors.green,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
           child: const Padding(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
               children: [
                 Icon(Icons.filter_list, color: Colors.white, size: 20),
                 SizedBox(width: 8),
-                Text("Filter", style: TextStyle(color: Colors.white, fontSize: 16)),
+                Text(
+                  "Filter",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ],
             ),
           ),
@@ -284,10 +358,16 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _buildDeviceSummary() {
     return Container(
       padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(color: const Color(0xFF043549), borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(
+        color: const Color(0xFF043549),
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: Row(
         children: [
-          Text("Devices: ${filteredDevices.length}", style: const TextStyle(fontSize: 16, color: Colors.white)),
+          Text(
+            "Devices: ${filteredDevices.length}",
+            style: const TextStyle(fontSize: 16, color: Colors.white),
+          ),
           const Spacer(),
         ],
       ),
@@ -297,32 +377,35 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _buildDeviceGrid(BuildContext context) {
     return StaggeredGrid.count(
       crossAxisCount: 1,
-      children: filteredDevices.map((device) {
-        return StaggeredGridTile.fit(
-          crossAxisCellCount: 1,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => DeviceDetailPage(deviceId: device["id"])),
-              );
-            },
-            child: DeviceCard(
-              name: device['name'] ?? '',
-              id: device['id'] ?? '',
-              client: device['client'] ?? '',
-              district: device['district'] ?? '',
-              city: device['city'] ?? '',
-              location: device['location'] ?? '',
-              sector: device['sector'] ?? '',
-              state: device['state'] ?? '',
-              pincode: device['pincode'] ?? '',
-              status: _getStatusFromString(device['status']),
-              emergency: device['emergency'] ?? false,
-            ),
-          ),
-        );
-      }).toList(),
+      children:
+          filteredDevices.map((device) {
+            return StaggeredGridTile.fit(
+              crossAxisCellCount: 1,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => DeviceDetailPage(deviceId: device["id"]),
+                    ),
+                  );
+                },
+                child: DeviceCard(
+                  name: device['name'] ?? '',
+                  id: device['id'] ?? '',
+                  client: device['client'] ?? '',
+                  district: device['district'] ?? '',
+                  city: device['city'] ?? '',
+                  location: device['location'] ?? '',
+                  sector: device['sector'] ?? '',
+                  state: device['state'] ?? '',
+                  pincode: device['pincode'] ?? '',
+                  status: _getStatusFromString(device['status']),
+                  emergency: device['emergency'] ?? false,
+                ),
+              ),
+            );
+          }).toList(),
     );
   }
 }

@@ -56,9 +56,7 @@ class _EditDeviceDialogState extends State<EditDeviceDialog> {
     }
 
     setState(() => loading = true);
-    final url = Uri.parse(
-      'https://mitzvah-software-for-smart-air-curtain.onrender.com/devicecheck',
-    );
+    final url = Uri.parse('http://13.203.214.225:3000/devicecheck');
 
     try {
       final response = await http.post(
@@ -128,9 +126,7 @@ class _EditDeviceDialogState extends State<EditDeviceDialog> {
       return;
     }
 
-    final url = Uri.parse(
-      'https://mitzvah-software-for-smart-air-curtain.onrender.com/add-data',
-    );
+    final url = Uri.parse('http://13.203.214.225:3000/add-data');
 
     try {
       final response = await http.post(

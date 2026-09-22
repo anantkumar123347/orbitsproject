@@ -1,28 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:orbitsproject/main.dart';
+import 'package:orbitsproject/pages/login.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Provide the required parameters: username and password
+  testWidgets('Shows the login page when no user is logged in', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
-      const MyApp(
-        isLoggedIn: false,
-        username: 'testUser', // ✅ Added required argument
-        password: 'testPass', // ✅ Added required argument
-      ),
+      const MyApp(isLoggedIn: false, username: null, password: null),
     );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // With no stored session, the app should land on the login screen.
+    expect(find.byType(LoginPage), findsOneWidget);
+    expect(find.text('Select Role'), findsOneWidget);
+    expect(find.widgetWithText(TextField, 'Username'), findsOneWidget);
+    expect(find.widgetWithText(TextField, 'Password'), findsOneWidget);
   });
 }
